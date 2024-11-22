@@ -177,39 +177,31 @@ def main():
         elif game_lost:
             display_lose_message()
 
-        if game_won:
-            new_game_button_rect = draw_button("New Game", SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2, 160, 50)
-            exit_button_rect = draw_button("Exit", SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 + 70, 100, 50)
-        elif game_lost:
+        if game_won or game_lost:
             new_game_button_rect = draw_button("New Game", SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2, 160, 50)
             exit_button_rect = draw_button("Exit", SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 + 70, 100, 50)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if game_won:
-                if new_game_button_rect and new_game_button_rect.collidepoint(mouse_pos):
-                    reset_game()
-                    game_won = False
-                elif exit_button_rect and exit_button_rect.collidepoint(mouse_pos):
-                    running = False
-            elif game_lost:
-                if new_game_button_rect and new_game_button_rect.collidepoint(mouse_pos):
-                    reset_game()
-                    game_lost = False
-                elif exit_button_rect and exit_button_rect.collidepoint(mouse_pos):
-                    running = False
-            else:
-                result = handle_click(mouse_pos)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if game_won or game_lost:
+                    if new_game_button_rect and new_game_button_rect.collidepoint(mouse_pos):
+                        reset_game()
+                        game_won = False
+                        game_lost = False
+                    elif exit_button_rect and exit_button_rect.collidepoint(mouse_pos):
+                        running = False
+                else:
+                    result = handle_click(mouse_pos)
 
-                if result == 'lose':
-                    game_lost = True
-                elif check_win():
-                    game_won = True
+                    if result == 'lose':
+                        game_lost = True
+                    elif check_win():
+                        game_won = True
 
-    pygame.display.flip()
+        pygame.display.flip()
 
     pygame.quit()
     sys.exit()
